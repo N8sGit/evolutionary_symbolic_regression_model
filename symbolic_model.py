@@ -17,12 +17,14 @@ class SymbolicModel:
 
         # Define the mapping from SymPy functions to NumPy functions for vectorized operations
         sympy_to_numpy = {
+            'add': np.add,
+            'subtract': np.subtract,
+            'multiply': np.multiply,
             'sin': np.sin,
             'cos': np.cos,
             'exp': np.exp,
             'log': np.log,
             'sqrt': np.sqrt,
-            'add': np.add,
             'sub': np.subtract,
             'mul': np.multiply,
             'safe_div': safe_div,

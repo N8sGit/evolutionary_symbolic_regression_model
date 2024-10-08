@@ -137,8 +137,7 @@ def main(config: dict) -> None:
     
     # Reshape input data and perform inference with the autoencoder
     input_data = torch.tensor(data[config['feature_cols']].values, dtype=torch.float32)
-    input_data = input_data.view(-1, len(config['feature_cols']))  # Ensure the shape is (batch_size, num_features)
-    _, latent_autoencoder_predictions = model(input_data)
+    input_data = input_data.view(-1, len(config['feature_cols']))
     
     autoencoder_inference_time = time.time() - start_time
     logging.info(f'Autoencoder inference time: {autoencoder_inference_time:.6f} seconds')
@@ -185,13 +184,13 @@ if __name__ == "__main__":
         'shuffle': True,
         'hidden_dims': [16, 8],
         'latent_dim': 2,
-        'learning_rate': 0.001,  # Adjusted for better convergence
-        'num_epochs': 500,        # Set higher for better training
+        'learning_rate': 0.001,
+        'num_epochs': 500,
         'log_interval': 50,
-        'generations': 20,        # Increased number of generations for better evolution
-        'population_size': 300,   # Population size for GP
+        'generations': 50,
+        'population_size': 300, 
         'output_csv': 'reconstructed_data.csv',
-        'training': args.training  # Set from command-line arguments
+        'training': args.training # set training=False when running python main.py to skip training if already trained
     }
     
     main(config)

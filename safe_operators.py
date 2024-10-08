@@ -1,6 +1,4 @@
 import numpy as np
-from sympy import sqrt as sym_sqrt, exp as sym_exp, log as sym_log
-
 import numpy as np
 
 def safe_div(x, y):

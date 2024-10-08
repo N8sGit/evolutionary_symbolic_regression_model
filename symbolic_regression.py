@@ -7,6 +7,29 @@ from logging_config import logging
 from safe_operators import safe_div, safe_exp, safe_log, safe_sqrt
 from sympy import simplify, symbols, sympify
 
+    # Define vectorized primitive functions with standard names
+def add(x, y):
+    return np.add(x, y)
+add.__name__ = 'add'
+
+def subtract(x, y):
+    return np.subtract(x, y)
+subtract.__name__ = 'subtract'
+
+def multiply(x, y):
+    return np.multiply(x, y)
+multiply.__name__ = 'multiply'
+
+def sin(x):
+    return np.sin(x)
+sin.__name__ = 'sin'
+
+def cos(x):
+    return np.cos(x)
+cos.__name__ = 'cos'
+
+
+
 def perform_symbolic_regression_deap(X: np.ndarray, y: np.ndarray, feature_names: list, generations: int = 20) -> list:
     """
     Perform symbolic regression using DEAP to find symbolic equations that map X to y.
@@ -35,15 +58,18 @@ def perform_symbolic_regression_deap(X: np.ndarray, y: np.ndarray, feature_names
         pset.renameArguments(**{f'ARG{i}': fname})
 
     # 3. Add primitives to the primitive set
-    pset.addPrimitive(operator.add, 2)
-    pset.addPrimitive(operator.sub, 2)
-    pset.addPrimitive(operator.mul, 2)
-    pset.addPrimitive(safe_div, 2)  # Use the safe division function
-    pset.addPrimitive(math.sin, 1)
-    pset.addPrimitive(math.cos, 1)
-    pset.addPrimitive(safe_exp, 1)  # Use the safe exponential function
-    pset.addPrimitive(safe_log, 1)  # Use the safe logarithm function
-    pset.addPrimitive(safe_sqrt, 1)  # Use the safe square root function
+    pset.addPrimitive(add, 2)
+    pset.addPrimitive(subtract, 2)
+    pset.addPrimitive(multiply, 2)
+    pset.addPrimitive(sin, 1)
+    pset.addPrimitive(cos, 1)
+    pset.addPrimitive(safe_exp, 1)
+    pset.addPrimitive(safe_log, 1)
+    pset.addPrimitive(safe_sqrt, 1)
+    pset.addPrimitive(safe_div, 2)
+    pset.addPrimitive(safe_exp, 1)
+    pset.addPrimitive(safe_log, 1)
+    pset.addPrimitive(safe_sqrt, 1)
 
     # 4. Remove constants to prevent constant expressions
     # pset.addTerminal(1)  # Removed to prevent expressions like sin(cos(1))
@@ -72,10 +98,10 @@ def perform_symbolic_regression_deap(X: np.ndarray, y: np.ndarray, feature_names
             # Vectorized evaluation
             predictions = func(*X.T)  # Pass columns as separate arguments
 
-            # Convert predictions to a NumPy array
+            # Ensure predictions are a NumPy array
             predictions = np.array(predictions)
 
-            # If predictions are scalar, broadcast to match y
+            # Handle scalar outputs by broadcasting
             if predictions.ndim == 0:
                 predictions = np.full(y.shape, predictions)
             elif predictions.ndim == 1:
@@ -86,6 +112,7 @@ def perform_symbolic_regression_deap(X: np.ndarray, y: np.ndarray, feature_names
 
             # Check for infinities or NaN values in the predictions
             if np.any(np.isinf(predictions)) or np.any(np.isnan(predictions)):
+                logging.warning(f"Individual contains invalid predictions (inf or NaN): {individual}")
                 return float('inf'),  # Penalize individual with infinite fitness score
 
             # Calculate MSE
@@ -94,7 +121,7 @@ def perform_symbolic_regression_deap(X: np.ndarray, y: np.ndarray, feature_names
             return mse,
 
         except Exception as e:
-            # If any error occurs during evaluation (e.g., math domain error), penalize with a high fitness value
+            # Penalize individual with infinite fitness score
             logging.error(f"Error evaluating individual {individual}: {e}")
             return float('inf'),
 
