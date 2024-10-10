@@ -12,6 +12,7 @@ from symbolic_model import SymbolicModel
 from training import train_autoencoder
 from validation import validate_hybrid_model
 from symbolic_regression import perform_symbolic_regression_deap
+import csv
 
 def main(config: dict) -> None:
     """
@@ -155,9 +156,10 @@ def main(config: dict) -> None:
     logging.info(f"Evaluation completed with MSE for latent dimension 1: {latent_1_mse}" + 
                 (f", MSE for latent dimension 2: {latent_2_mse}" if latent_dim_count > 1 else ""))
 
-    with open("discovered_equations.txt", "w") as f:
+    with open('discovered_equations.csv', 'a', newline='') as f:
+        writer = csv.writer(f)
         for eq in symbolic_eqs:
-            f.write(str(eq) + "\n")
+            writer.writerow([str(eq)])
 
 if __name__ == "__main__":
     def str2bool(v):

@@ -8,7 +8,7 @@ import torch
 from autoencoder import Autoencoder
 import time
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-
+import csv
 # ----------------------
 # 1. Load Data
 # ----------------------
@@ -27,13 +27,22 @@ new_data_features = new_data[['HouseAge', 'AveRooms', 'PRICE']].values
 # ----------------------
 # 2. Load and Optimize Symbolic Equations
 # ----------------------
-# Load the symbolic equations from the saved file
-with open("discovered_equations.txt", "r") as f:
-    loaded_eqs = [sympify(line.strip()) for line in f.readlines()]
+# Load the symbolic equations from the saved file 
+# Load the last two equations from the CSV file
+with open('discovered_equations.csv', 'r') as f:
+    reader = csv.reader(f)
+    loaded_eqs = [sympify(row[0]) for row in reader if row]
+
+# Get the last two equations (or whatever is available)
+last_two_equations = loaded_eqs[-2:] if len(loaded_eqs) >= 2 else loaded_eqs
+
+# Print the last two equations
+for eq in last_two_equations:
+    print(eq)
 
 # Optimize the loaded symbolic equations
 # Currently not working
-optimized_eqs = optimize_equations(loaded_eqs)
+# optimized_eqs = optimize_equations(loaded_eqs)
 
 # Feature names (these should match the input feature names from training)
 feature_names = ['HouseAge', 'AveRooms', 'PRICE']
