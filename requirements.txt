@@ -1,0 +1,6 @@
+deap==1.4.1
+numpy==2.1.2
+pandas==2.2.3
+scikit_learn==1.4.2
+sympy==1.13.2
+torch==2.3.1
