@@ -1,6 +1,5 @@
 from logging_config import logging
-from typing import Optional, Tuple
-import numpy as np
+from typing import Tuple
 import pandas as pd
 from torch.utils.data import Dataset
 from sklearn.preprocessing import MinMaxScaler

@@ -61,7 +61,7 @@ class SymbolicModel:
         
         for func in self.latent_funcs:
             try:
-                # Vectorized evaluation
+                # Vectorized evaluation 
                 preds = func(*feature_values.T)  # Unpack columns as separate arguments
 
                 # Handle scalar outputs by broadcasting

@@ -1,5 +1,4 @@
 import numpy as np
-import numpy as np
 
 def safe_div(x, y):
     """

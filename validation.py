@@ -3,7 +3,6 @@ import torch.nn as nn
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
-import sympy as sp
 from sympy import symbols, lambdify
 import logging
 from typing import Tuple
