@@ -1,13 +1,11 @@
 import operator
-import math
-import random
 import numpy as np
 from deap import gp, creator, base, tools, algorithms
 from logging_config import logging
 from safe_operators import safe_div, safe_exp, safe_log, safe_sqrt
 from sympy import simplify, symbols, sympify
 
-    # Define vectorized primitive functions with standard names
+# Define vectorized primitive functions with standard names
 def add(x, y):
     return np.add(x, y)
 add.__name__ = 'add'
