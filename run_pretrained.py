@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from symbolic_model import SymbolicModel
 from data import CaliforniaHousingDatasetGenerator
-from optimize_equations import optimize_equations
+from optimize_equations import optimize_equations, compare_equations
 import torch
 from autoencoder import Autoencoder
 import time
@@ -32,38 +32,14 @@ with open("discovered_equations.txt", "r") as f:
     loaded_eqs = [sympify(line.strip()) for line in f.readlines()]
 
 # Optimize the loaded symbolic equations
+# Currently not working
 optimized_eqs = optimize_equations(loaded_eqs)
 
 # Feature names (these should match the input feature names from training)
 feature_names = ['HouseAge', 'AveRooms', 'PRICE']
 
 # ----------------------
-# 3. Initialize Symbolic Model (Lambdification happens here)
-# ----------------------
-# Initialize the symbolic model with the optimized equations
-symbolic_model = SymbolicModel(symbolic_eqs=loaded_eqs, feature_names=feature_names)
-
-# Measure inference time for the symbolic model
-start_time = time.time()
-predictions = symbolic_model.predict(new_data_features)
-predictions = np.nan_to_num(predictions, nan=0.0, posinf=np.inf, neginf=-np.inf)
-symbolic_inference_time = time.time() - start_time
-
-print(f"Symbolic model inference time: {symbolic_inference_time:.6f} seconds")
-
-# Convert predictions to a DataFrame for interpretability
-prediction_df = pd.DataFrame(predictions, columns=[f'latent_dim_{i+1}' for i in range(predictions.shape[1])])
-
-# Handle invalid values (NaN, inf)
-prediction_df.replace([np.inf, -np.inf], np.nan, inplace=True)  # Replace infinities with NaNs
-prediction_df.dropna(inplace=True)  # Drop rows with NaNs
-
-# Print a summary of the predictions
-print("Summary of predictions:")
-print(prediction_df.describe())
-
-# ----------------------
-# 4. Compute Latent Dimensions using Autoencoder
+# 3. Compute Latent Dimensions using Autoencoder
 # ----------------------
 # Recreate the autoencoder model
 model = Autoencoder(
@@ -100,6 +76,44 @@ latent_numpy = latent_representations.detach().numpy()
 new_data['latent_dim_1'] = latent_numpy[:, 0]
 new_data['latent_dim_2'] = latent_numpy[:, 1]
 
+# Loop through each equation and compare it with the corresponding latent dimension
+# for i, (orig_eq, opt_eq) in enumerate(zip(loaded_eqs, optimized_eqs)):
+#     print(f"\nComparison for Equation {i + 1}:")
+    
+#     # Compare each equation against its corresponding latent dimension
+#     metrics = compare_equations(
+#         orig_eq, 
+#         opt_eq, 
+#         new_data_features, 
+#         new_data[f'latent_dim_{i + 1}'].values
+#     )
+
+# ----------------------
+# 4. Initialize Symbolic Model (Lambdification happens here)
+# ----------------------
+# Initialize the symbolic model with the optimized equations
+symbolic_model = SymbolicModel(symbolic_eqs=loaded_eqs, feature_names=feature_names)
+
+# Measure inference time for the symbolic model
+start_time = time.time()
+predictions = symbolic_model.predict(new_data_features)
+predictions = np.nan_to_num(predictions, nan=0.0, posinf=np.inf, neginf=-np.inf)
+symbolic_inference_time = time.time() - start_time
+
+print(f"Symbolic model inference time: {symbolic_inference_time:.6f} seconds")
+
+# Convert predictions to a DataFrame for interpretability
+prediction_df = pd.DataFrame(predictions, columns=[f'latent_dim_{i+1}' for i in range(predictions.shape[1])])
+
+# Handle invalid values (NaN, inf)
+prediction_df.replace([np.inf, -np.inf], np.nan, inplace=True)  # Replace infinities with NaNs
+prediction_df.dropna(inplace=True)  # Drop rows with NaNs
+
+# Print a summary of the predictions
+print("Summary of predictions:")
+print(prediction_df.describe())
+
+
 # ----------------------
 # 5. Evaluate Performance
 # ----------------------
@@ -130,9 +144,9 @@ def evaluate_model(true_values, predicted_values):
 true_values = new_data[['latent_dim_1', 'latent_dim_2']].values
 
 # Compute performance metrics between the symbolic model's predictions and the true latent dimensions
-metrics = evaluate_model(true_values, predictions)
+eval_metrics = evaluate_model(true_values, predictions)
 
 # Print the performance metrics
 print("\nPerformance Metrics:")
-for metric, value in metrics.items():
+for metric, value in eval_metrics.items():
     print(f"{metric}: {value}")

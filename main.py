@@ -11,7 +11,7 @@ from autoencoder import Autoencoder
 from symbolic_model import SymbolicModel
 from training import train_autoencoder
 from validation import validate_hybrid_model
-from symbolic_regression import perform_symbolic_regression_deap  # Importing DEAP-based symbolic regression
+from symbolic_regression import perform_symbolic_regression_deap
 
 def main(config: dict) -> None:
     """
@@ -46,7 +46,7 @@ def main(config: dict) -> None:
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=config.get('learning_rate', 0.001))  # Adjusted learning rate for stability
 
-    # 4. Training
+        # 4. Training
     if config['training']:
         logging.info("Starting training phase...")
         train_autoencoder(
@@ -58,6 +58,16 @@ def main(config: dict) -> None:
             log_interval=config.get('log_interval', 50)
         )
         logging.info("Training completed.")
+        
+        # Save the trained model
+        model_save_path = config.get('model_save_path', 'autoencoder_model.pth')
+        torch.save(model.state_dict(), model_save_path)  # Saving the model state dictionary
+        logging.info(f"Model saved to {model_save_path}")
+    else:
+        # Load the model if not training
+        model_load_path = config.get('model_load_path', 'autoencoder_model.pth')
+        model.load_state_dict(torch.load(model_load_path))
+        logging.info(f"Model loaded from {model_load_path}")
 
     # 5. Evaluation (whether training or loading an existing model)
     logging.info("Starting evaluation...")
@@ -145,6 +155,10 @@ def main(config: dict) -> None:
     logging.info(f"Evaluation completed with MSE for latent dimension 1: {latent_1_mse}" + 
                 (f", MSE for latent dimension 2: {latent_2_mse}" if latent_dim_count > 1 else ""))
 
+    with open("discovered_equations.txt", "w") as f:
+        for eq in symbolic_eqs:
+            f.write(str(eq) + "\n")
+
 if __name__ == "__main__":
     def str2bool(v):
         """
@@ -175,7 +189,7 @@ if __name__ == "__main__":
     
     # Configuration Parameters
     config = {
-        'num_samples': 200,
+        'num_samples': 300,
         'noise_std': 0.2,
         'seed': 42,
         'feature_cols': ['HouseAge', 'AveRooms'],
@@ -187,8 +201,8 @@ if __name__ == "__main__":
         'learning_rate': 0.001,
         'num_epochs': 500,
         'log_interval': 50,
-        'generations': 50,
-        'population_size': 300, 
+        'generations': 200,
+        'population_size': 500, 
         'output_csv': 'reconstructed_data.csv',
         'training': args.training # set training=False when running python main.py to skip training if already trained
     }
