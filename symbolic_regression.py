@@ -69,10 +69,6 @@ def perform_symbolic_regression_deap(X: np.ndarray, y: np.ndarray, feature_names
     pset.addPrimitive(safe_log, 1)
     pset.addPrimitive(safe_sqrt, 1)
 
-    # 4. Remove constants to prevent constant expressions
-    # pset.addTerminal(1)  # Removed to prevent expressions like sin(cos(1))
-    # pset.addTerminal(0)  # Already removed earlier
-
     # 5. Create symbols with feature names (if needed)
     x_symbols = symbols(feature_names)
 

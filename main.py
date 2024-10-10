@@ -38,8 +38,8 @@ def main(config: dict) -> None:
     
     # 3. Model Initialization
     model = Autoencoder(
-        input_dim=len(config.get('feature_cols')),  # This should match the number of features, which is 2
-        output_dim=len(config.get('target_cols')),  # Assuming you adjust your model to handle different output dimensions
+        input_dim=len(config.get('feature_cols')),  #
+        output_dim=len(config.get('target_cols')),  
         latent_dim=config.get('latent_dim', 2),
         hidden_dims=config.get('hidden_dims', [16, 8])
     )
@@ -175,7 +175,7 @@ if __name__ == "__main__":
 
     # Configure logging to capture detailed debug information during debugging
     logging.basicConfig(
-        level=logging.DEBUG,  # Set to DEBUG to capture detailed logs
+        level=logging.DEBUG,
         format='%(asctime)s %(levelname)s:%(message)s',
         handlers=[
             logging.StreamHandler()
