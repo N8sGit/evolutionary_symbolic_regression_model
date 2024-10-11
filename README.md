@@ -1,4 +1,4 @@
-# Symbolic Regression Genetic Model ReadMe (rought draft)
+# Symbolic Regression Genetic Model ReadMe (draft)
 
 ## Overview
 
