@@ -7,7 +7,7 @@ The **Symbolic Regression Genetic Modell** is a machine learning project that in
 
 Evolutionary algorithms are *nature's generative model* and it's worth exploring its potential with generative AI for new forms of fine tuning and synthetic data generation. That's what this project is all about.
 
-See the attached PDF, for a research paper that gets into more detail about the promising results of this apprach (genetic_programming_ai_paper.pdf)
+See the attached PDF, for a research paper that gets into more detail about the promising results of this methodology (genetic_programming_ai_paper.pdf)
 
 ### Key Features:
 - **Symbolic Regression**: The project uses symbolic equations generated from data.
