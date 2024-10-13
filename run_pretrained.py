@@ -4,6 +4,7 @@ import pandas as pd
 from symbolic_model import SymbolicModel
 from data import CaliforniaHousingDatasetGenerator
 from optimize_equations import optimize_equations, compare_equations
+from helpers import get_next_batch_id, load_equations
 import torch
 from autoencoder import Autoencoder
 import time
@@ -29,16 +30,8 @@ new_data_features = new_data[['HouseAge', 'AveRooms', 'PRICE']].values
 # ----------------------
 # Load the symbolic equations from the saved file 
 # Load the last two equations from the CSV file
-with open('discovered_equations.csv', 'r') as f:
-    reader = csv.reader(f)
-    loaded_eqs = [sympify(row[0]) for row in reader if row]
 
-# Get the last two equations (or whatever is available)
-last_two_equations = loaded_eqs[-2:] if len(loaded_eqs) >= 2 else loaded_eqs
-
-# Print the last two equations
-for eq in last_two_equations:
-    print(eq)
+loaded_eqs = load_equations(batch_id=get_next_batch_id())
 
 # Optimize the loaded symbolic equations
 # Currently not working

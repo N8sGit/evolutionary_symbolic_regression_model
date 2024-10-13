@@ -12,6 +12,7 @@ from symbolic_model import SymbolicModel
 from training import train_autoencoder
 from validation import validate_hybrid_model
 from symbolic_regression import perform_symbolic_regression_deap
+from helpers import map_equations_to_csv
 import csv
 
 def main(config: dict) -> None:
@@ -155,7 +156,15 @@ def main(config: dict) -> None:
 
     logging.info(f"Evaluation completed with MSE for latent dimension 1: {latent_1_mse}" + 
                 (f", MSE for latent dimension 2: {latent_2_mse}" if latent_dim_count > 1 else ""))
+    # Determine the number of latent dimensions dynamically from the symbolic equations or latent representations
+    num_latent_dims = y_latent.shape[1]  # or latent_symbolic_predictions.shape[1], depending on where you want to pull from
 
+    # Dynamically create the latent_dimension list
+    latent_dims = [f'latent_dim_{i + 1}' for i in range(num_latent_dims)]
+
+    # Logging and confirmation of latent dimensions
+    logging.info(f"Generated latent dimensions: {latent_dims}")
+    map_equations_to_csv(symbolic_eqs, 'CaliforniaHousing', ['latent_dim_1', 'latent_dim_2'])
     with open('discovered_equations.csv', 'a', newline='') as f:
         writer = csv.writer(f)
         for eq in symbolic_eqs:
