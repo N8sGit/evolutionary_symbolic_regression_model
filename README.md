@@ -3,7 +3,7 @@
 ## Overview
 Check out a presentation I gave on this project on youtube [here](https://youtu.be/Fqhn_K8BuA4)
 
-The **Symbolic Regression Genetic Modell** is a machine learning project that integrates symbolic regression with deep learning. It involves using genetic programming to derive  symbolic equations for a dataset, optimizing these equations using simplification techniques, and comparing their performance with neural network latent representations.
+The **Symbolic Regression Genetic Model** is a machine learning project that integrates symbolic regression with deep learning. It involves using genetic programming to derive  symbolic equations for a dataset, optimizing these equations using simplification techniques, and comparing their performance with neural network latent representations.
 
 Evolutionary algorithms are *nature's generative model* and it's worth exploring its potential with generative AI for new forms of fine tuning and synthetic data generation. That's what this project is all about.
 
